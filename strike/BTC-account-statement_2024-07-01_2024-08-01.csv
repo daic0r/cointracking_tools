@@ -1,0 +1,3 @@
+Transaction ID,Time (UTC),Status,Transaction Type,Amount,Currency,Fee Amount,Fee Currency,Description
+4cf4143e-4113-494d-9689-949c914fb770,2024-07-24 14:10:19,Completed,On-Chain,-0.00080587,BTC,0.00002605,BTC,
+730ca2c7-6562-45a6-8f74-95a741f77a4e,2024-07-23 16:30:13,Completed,Exchange,0.00080587,BTC,0,BTC,
