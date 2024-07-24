@@ -72,14 +72,22 @@ def transaction_from_row(row):
 
     return trans
 
-
+# Transactions in Strike exports are separated like this:
+#
+# 28062cb0-20cc-4398-9b5e-1cea6c76e5ea,2024-07-23 16:30:13,Completed,Exchange,-49.36,EUR,0.64,EUR,
+# 730ca2c7-6562-45a6-8f74-95a741f77a4e,2024-07-23 16:30:13,Completed,Exchange,0.00080587,BTC,0,BTC,
+#
+# We need to merge these into a single transaction
 def merge_separated_trades(transaction1: Transaction, transaction2: Transaction):
     assert(transaction1.date == transaction2.date)
     assert(transaction1.exchange == transaction2.exchange)
     assert((transaction1.buy_currency == "BTC" and transaction2.sell_currency == "EUR") or (transaction1.sell_currency == "EUR" and transaction2.buy_currency == "BTC"))
+    assert((transaction1.sell_currency == "EUR" and isinstance(transaction1.fee, float)) or (transaction2.sell_currency == "EUR" and isinstance(transaction2.fee, float)))
+
     buy_amount = transaction1.buy if transaction1.buy_currency == "BTC" else transaction2.buy
     sell_amount = transaction1.sell+transaction1.fee if transaction1.sell_currency == "EUR" else transaction2.sell+transaction2.fee
-    fee = transaction1.fee if transaction1.sell != 0 else transaction2.fee
+    fee = transaction1.fee if (isinstance(transaction1.fee, float) and float(transaction1.fee) != 0) else transaction2.fee
+
     return Transaction("Trade", buy_amount, "BTC", sell_amount, "EUR", fee, "EUR", transaction1.comment, transaction1.date, transaction1.tx_id)
 
 
