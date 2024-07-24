@@ -28,7 +28,28 @@ class Transaction:
         return f'"Type","Buy","Cur.","Sell","Cur.","Fee","Cur.","Exchange","Group","Comment","Date","Tx-ID"\n'
 
     def __str__(self):
-        return f'"{self.type}","{self.buy:.8f}","{self.buy_currency}","{self.sell:.8f}","{self.sell_currency}","{self.fee:.8f}","{self.fee_currency}","{self.exchange}","{self.group}","{self.comment}","{self.date}","{self.tx_id}"\n'
+        ret = f'"{self.type}",';
+        if isinstance(self.buy, float):
+            ret += f'"{self.buy:.8f}",'
+        else:
+            ret += f'"{self.buy}",'
+        ret += f'"{self.buy_currency}",'
+        if isinstance(self.sell, float):
+            ret += f'"{self.sell:.8f}",'
+        else:
+            ret += f'"{self.sell}",'
+        ret += f'"{self.sell_currency}",'
+        if isinstance(self.fee, float):
+            ret += f'"{self.fee:.8f}",'
+        else:
+            ret += f'"{self.fee}",'
+        ret += f'"{self.fee_currency}",'
+        ret += f'"{self.exchange}",'
+        ret += f'"{self.group}",'
+        ret += f'"{self.comment}",'
+        ret +=f'"{self.date}",'
+        ret += f'"{self.tx_id}"\n'
+        return ret
 
 
 def transaction_from_row(row):
@@ -45,9 +66,9 @@ def transaction_from_row(row):
 
     trans = None
     if amount > 0:
-        trans = Transaction(trans_type, amount, currency, 0.0, "", float(row[6]), row[7], row[8], date, row[0])
+        trans = Transaction(trans_type, amount, currency, "", "", float(row[6]), row[7], row[8], date, row[0])
     else:
-        trans = Transaction(trans_type, 0.0, "", abs(amount), currency, float(row[6]), row[7], row[8], date, row[0])
+        trans = Transaction(trans_type, "", "", abs(amount), currency, float(row[6]), row[7], row[8], date, row[0])
 
     return trans
 
